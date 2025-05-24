@@ -14,28 +14,49 @@ class LLMService:
         self.groq_llm = None
         self.gemini_llm = None
         
+        logger.info(f"🔍 Initializing LLM Service...")
+        logger.info(f"🔑 GROQ_API_KEY available: {bool(settings.GROQ_API_KEY)}")
+        logger.info(f"🔑 GOOGLE_API_KEY available: {bool(settings.GOOGLE_API_KEY)}")
+        
         if settings.GROQ_API_KEY:
             try:
+                logger.info("🚀 Attempting to initialize Groq LLM...")
                 self.groq_llm = ChatGroq(
                     groq_api_key=settings.GROQ_API_KEY,
                     model_name="gemma2-9b-it",
                     temperature=0.1,
                     max_tokens=2048
                 )
-                logger.info("Groq LLM initialized successfully")
+                logger.info("✅ Groq LLM initialized successfully")
             except Exception as e:
-                logger.error(f"Failed to initialize Groq LLM: {e}")
+                logger.error(f"❌ Failed to initialize Groq LLM: {e}")
+        else:
+            logger.warning("⚠️ GROQ_API_KEY not provided - Groq LLM unavailable")
         
         if settings.GOOGLE_API_KEY:
             try:
+                logger.info("🚀 Attempting to initialize Google Gemini LLM...")
                 self.gemini_llm = ChatGoogleGenerativeAI(
                     google_api_key=settings.GOOGLE_API_KEY,
                     model="gemma-3n-e4b-it",  
                     temperature=0.1
                 )
-                logger.info("Google Gemini LLM with Gemma-3n initialized successfully")
+                logger.info("✅ Google Gemini LLM with Gemma-3n initialized successfully")
             except Exception as e:
-                logger.error(f"Failed to initialize Google Gemini LLM: {e}")
+                logger.error(f"❌ Failed to initialize Google Gemini LLM: {e}")
+        else:
+            logger.warning("⚠️ GOOGLE_API_KEY not provided - Google Gemini LLM unavailable")
+        
+        # Final status
+        if not self.groq_llm and not self.gemini_llm:
+            logger.error("💥 NO LLM SERVICES AVAILABLE - Please check your API keys!")
+        else:
+            available_services = []
+            if self.groq_llm:
+                available_services.append("Groq")
+            if self.gemini_llm:
+                available_services.append("Google Gemini")
+            logger.info(f"🎉 LLM Services ready: {', '.join(available_services)}")
     
     def chat_about_paper(self, paper: dict, message: str) -> str:
         """Generate enhanced responses about papers with better context and formatting"""
