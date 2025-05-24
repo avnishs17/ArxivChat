@@ -1,6 +1,5 @@
 # 🔬 ArxivChat - AI Research Assistant
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/YOUR_TEMPLATE)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
@@ -44,7 +43,7 @@ An intelligent research assistant that helps you search and chat about academic 
 
 ### 1. **Clone Repository**
 ```bash
-git clone https://github.com/yourusername/arxivchat.git
+git clone https://github.com/avnishs17/arxivchat.git
 cd arxivchat
 ```
 
@@ -105,16 +104,6 @@ Railway has **built-in GitHub integration** - no complex CI/CD needed!
 
 4. **Deploy**: Railway automatically builds and deploys!
 
-### **Manual Railway CLI** 🔧
-```bash
-# Install Railway CLI
-npm install -g @railway/cli
-
-# Login and deploy
-railway login
-railway link
-railway up
-```
 
 ## 🔧 Configuration
 
@@ -136,7 +125,7 @@ PORT=8080                      # Server port
 ### **API Keys Setup**
 
 #### **Google AI API** (Primary - FREE)
-1. Visit [makersuite.google.com](https://makersuite.google.com)
+1. Visit [ai.dev](https://aistudio.google.com/)
 2. Generate API key for **FREE Gemma access**
 3. Add to environment: `GOOGLE_API_KEY=AIza...`
 
@@ -177,7 +166,7 @@ This work builds upon *GraphSAGE* and *GAT* architectures, potentially improving
 
 ## 🔄 CI/CD Pipeline
 
-The project includes **GitHub Actions for testing**:
+The project includes :
 - ✅ **Code Quality**: Syntax checking and linting
 - 🧪 **API Testing**: Health and endpoint validation
 - 🚀 **Railway Integration**: Built-in deployment (no manual CI/CD needed)
@@ -259,8 +248,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **🐛 Bug Reports**: [GitHub Issues](https://github.com/yourusername/arxivchat/issues)
-- **💡 Feature Requests**: [GitHub Discussions](https://github.com/yourusername/arxivchat/discussions)
+- **🐛 Bug Reports**: [GitHub Issues](https://github.com/avnishs17/arxivchat/issues)
+- **💡 Feature Requests**: [GitHub Discussions](https://github.com/avnishs17/arxivchat/discussions)
 - **📧 Contact**: your.email@example.com
 
 ---
