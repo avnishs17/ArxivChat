@@ -464,3 +464,17 @@ document.addEventListener('keydown', function(e) {
         closePanels();
     }
 });
+
+// Handle click outside to close panels
+document.addEventListener('click', function(e) {
+    const historyPanel = document.getElementById('historyPanel');
+    const bookmarksPanel = document.getElementById('bookmarksPanel');
+    
+    // Check if click is outside both panels and not on trigger buttons
+    if (!historyPanel.contains(e.target) && 
+        !bookmarksPanel.contains(e.target) &&
+        !e.target.closest('button[onclick*="toggleHistory"]') &&
+        !e.target.closest('button[onclick*="toggleBookmarks"]')) {
+        closePanels();
+    }
+});

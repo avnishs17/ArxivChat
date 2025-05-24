@@ -5,7 +5,7 @@ import logging
 import time
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, validator
@@ -226,12 +226,26 @@ async def get_stats():
 # Error handlers
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc: HTTPException):
-    return {"error": "Not found", "detail": str(exc.detail)}
+    return JSONResponse(
+        status_code=404,
+        content={"error": "Not found", "detail": str(exc.detail)}
+    )
 
 @app.exception_handler(500)
 async def server_error_handler(request: Request, exc: HTTPException):
     logger.error(f"Server error: {exc}")
-    return {"error": "Internal server error", "detail": "Something went wrong"}
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "detail": "Something went wrong"}
+    )
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled exception: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "detail": "An unexpected error occurred"}
+    )
 
 if __name__ == "__main__":
     import uvicorn

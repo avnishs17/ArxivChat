@@ -106,6 +106,10 @@ button:active {
 .btn-small {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 button:disabled {
@@ -147,6 +151,30 @@ button:disabled {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+
+.panel-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.btn-close {
+    background: var(--error-color);
+    padding: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    min-width: 2.5rem;
+}
+
+.btn-close:hover {
+    background: #dc2626;
+    transform: scale(1.05);
 }
 
 /* Sections */
@@ -608,6 +636,32 @@ input[type="number"] {
     
     .input-container {
         flex-direction: column;
+    }
+    
+    .btn-close {
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.25rem;
+        min-width: 3rem;
+    }
+    
+    .btn-small {
+        height: 3rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .panel-header {
+        position: sticky;
+        top: 0;
+        background: var(--surface);
+        z-index: 10;
+        margin-bottom: 1rem;
+        padding-top: 1rem;
+    }
+    
+    .panel-actions {
+        gap: 0.5rem;
     }
 }
 
