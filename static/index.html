@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArxivChat - Research Assistant</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Add markdown rendering support -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-microscope"></i> ArxivChat</h1>
+            <p>AI-powered research assistant for arXiv papers</p>
+            <div class="header-actions">
+                <button onclick="toggleHistory()" class="btn-secondary">
+                    <i class="fas fa-history"></i> History
+                </button>
+                <button onclick="toggleBookmarks()" class="btn-secondary">
+                    <i class="fas fa-bookmark"></i> Bookmarks
+                </button>
+            </div>
+        </header>
+
+        <!-- Search History Panel -->
+        <div id="historyPanel" class="side-panel">
+            <div class="panel-header">
+                <h3><i class="fas fa-history"></i> Search History</h3>
+                <button onclick="clearHistory()" class="btn-small">Clear</button>
+            </div>
+            <div id="historyList" class="history-list"></div>
+        </div>
+
+        <!-- Bookmarks Panel -->
+        <div id="bookmarksPanel" class="side-panel">
+            <div class="panel-header">
+                <h3><i class="fas fa-bookmark"></i> Bookmarked Papers</h3>
+                <button onclick="clearBookmarks()" class="btn-small">Clear</button>
+            </div>
+            <div id="bookmarksList" class="bookmarks-list"></div>
+        </div>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <h2>Search Papers</h2>
+            <div class="search-form">
+                <div class="search-input-container">
+                    <input type="text" id="searchQuery" placeholder="Enter research topic (e.g., machine learning, quantum computing)" />
+                    <button onclick="searchPapers()" id="searchBtn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                <div class="search-options">
+                    <label>
+                        <input type="number" id="limitSelect" value="10" min="1" max="25" />
+                        Results
+                    </label>
+                </div>
+            </div>
+            <div id="searchResults" class="results"></div>
+        </section>
+
+        <!-- Chat Section -->
+        <section class="chat-section" style="display: none;">
+            <div class="chat-header">
+                <h2><i class="fas fa-comments"></i> Chat with Paper</h2>
+                <div class="chat-actions">
+                    <button onclick="exportConversation()" class="btn-secondary">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button onclick="clearChat()" class="btn-secondary">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+            </div>
+            <div id="selectedPaper" class="paper-info"></div>
+            <div id="chatMessages" class="chat-messages"></div>
+            <div class="chat-input">
+                <div class="input-container">
+                    <input type="text" id="chatQuery" placeholder="Ask a question about this paper..." />
+                    <button onclick="sendMessage()" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-hints">
+                    <span>💡 Try: "What is the main contribution?" or "Explain the methodology in detail"</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast" class="toast"></div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html> 

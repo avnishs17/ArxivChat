@@ -1,0 +1,50 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install httpx  # Only need httpx for FastAPI testing
+    
+    - name: Lint and syntax check
+      run: |
+        python -m py_compile src/*.py
+        echo "✅ Syntax check passed"
+    
+    - name: Test API endpoints
+      run: |
+        python -c "
+        import sys
+        sys.path.append('src')
+        from main import app
+        from fastapi.testclient import TestClient
+        client = TestClient(app)
+        
+        # Test health endpoint
+        response = client.get('/api/health')
+        assert response.status_code == 200, f'Health check failed: {response.status_code}'
+        
+        # Test stats endpoint  
+        response = client.get('/api/stats')
+        assert response.status_code == 200, f'Stats endpoint failed: {response.status_code}'
+        
+        print('✅ API tests passed')
+        " 
