@@ -25,5 +25,5 @@ USER appuser
 # Expose port (Railway will set this dynamically)
 EXPOSE $PORT
 
-# Run the application with Railway's dynamic port (no health check for now)
-CMD python -m uvicorn src.main:app --host 0.0.0.0 --port ${PORT:-8080} 
+# Use simple Python startup script
+CMD ["python", "start.py"] 
