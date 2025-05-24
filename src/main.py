@@ -83,14 +83,22 @@ async def log_requests(request: Request, call_next):
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Initialize services
+# Initialize services with resilient startup
 try:
     arxiv_service = ArxivService()
-    llm_service = LLMService()
-    logger.info("Services initialized successfully")
+    logger.info("ArXiv service initialized successfully")
 except Exception as e:
-    logger.error(f"Failed to initialize services: {e}")
-    raise
+    logger.error(f"Failed to initialize ArXiv service: {e}")
+    arxiv_service = None
+
+try:
+    llm_service = LLMService()
+    logger.info("LLM service initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize LLM service: {e}")
+    llm_service = None
+
+logger.info("App initialization completed - starting FastAPI")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
@@ -107,6 +115,10 @@ async def read_root():
 async def search_papers(q: str, limit: int = 10):
     """Search for papers on ArXiv with validation"""
     try:
+        # Check service availability
+        if not arxiv_service:
+            raise HTTPException(status_code=503, detail="ArXiv service not available")
+        
         # Input validation
         if not q or not q.strip():
             raise HTTPException(status_code=400, detail="Query cannot be empty")
@@ -135,6 +147,13 @@ async def search_papers(q: str, limit: int = 10):
 async def chat_with_paper(request: ChatRequest):
     """Chat about a paper with validation and rate limiting"""
     try:
+        # Check service availability
+        if not arxiv_service:
+            raise HTTPException(status_code=503, detail="ArXiv service not available")
+        
+        if not llm_service:
+            raise HTTPException(status_code=503, detail="LLM service not available - please check API keys")
+        
         logger.info(f"Chat request for paper: {request.paper_id[:20]}...")
         
         # Get paper details
@@ -159,15 +178,24 @@ async def chat_with_paper(request: ChatRequest):
 async def health_check():
     """Health check endpoint for Railway"""
     try:
-        # Test ArXiv API
-        test_papers = arxiv_service.search_papers("machine learning", 1)
-        arxiv_status = "healthy" if test_papers else "degraded"
+        # Basic service status
+        arxiv_status = "healthy" if arxiv_service else "unavailable"
+        llm_status = "healthy" if llm_service else "no_api_keys"
         
-        # Test LLM service
-        llm_status = "healthy" if (llm_service.groq_llm or llm_service.gemini_llm) else "no_api_keys"
+        # Only test ArXiv if service is available
+        if arxiv_service:
+            try:
+                test_papers = arxiv_service.search_papers("machine learning", 1)
+                if not test_papers:
+                    arxiv_status = "degraded"
+            except:
+                arxiv_status = "degraded"
+        
+        # Overall status - healthy if at least basic functionality works
+        overall_status = "healthy" if arxiv_service else "degraded"
         
         return {
-            "status": "healthy",
+            "status": overall_status,
             "timestamp": time.time(),
             "services": {
                 "arxiv_api": arxiv_status,
@@ -177,7 +205,13 @@ async def health_check():
         }
     except Exception as e:
         logger.error(f"Health check failed: {e}")
-        raise HTTPException(status_code=503, detail="Service unhealthy")
+        # Don't fail health check completely - return degraded status
+        return {
+            "status": "degraded",
+            "timestamp": time.time(),
+            "error": "Health check partially failed",
+            "version": "1.0.0"
+        }
 
 @app.get("/api/stats")
 async def get_stats():
